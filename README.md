@@ -28,14 +28,14 @@ Each section of this repository reflects structured methodology, validation proc
 ---
 ## Sections
 
-### STIG
+### [STIG](STIG/)
 
 Implementation and automation of DISA Windows 10 STIG controls.  
 Includes baseline scans, remediation workflow, validation, and PowerShell automation.
 
 ---
 
-### Threat-Hunt
+### [Threat-Hunt](Threat-Hunting/)
 
 Hypothesis-driven investigations using system logs and telemetry.  
 Includes documented findings, analysis methodology, and remediation recommendations.
