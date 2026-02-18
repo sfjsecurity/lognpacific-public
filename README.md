@@ -42,7 +42,7 @@ Includes documented findings, analysis methodology, and remediation recommendati
 
 ---
 
-### Vulnerability-Management
+### [Vulnerability-Management](https://github.com/sfjsecurity/vulnerability-management-project)
 
 Scan configuration, baseline analysis, prioritization, and remediation tracking.
 
