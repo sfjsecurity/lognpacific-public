@@ -18,14 +18,17 @@ The focus of this project is to demonstrate structured remediation methodology, 
 
 The following DISA Windows 10 STIG controls have been implemented and automated:
 
-- [WN10-AU-000500](STIG/WN10-AU-000500.ps1) – Application Event Log Size
+- [WN10-AU-000500](STIG/WN10-AU-000500.ps1) – Application Event Log Size (≥ 32768 KB)
 - [WN10-AU-000005](STIG/WN10-AU-000005.ps1) – Audit Credential Validation (Failure)
-- [WN10-CC-000205](STIG/WN10-CC-000205.ps1) – Windows Telemetry Configuration
-- [WN10-00-000031](STIG/WN10-00-000031.ps1) – BitLocker Pre-Boot Authentication (TPM+PIN)
-- [WN10-CC-000370](STIG/WN10-CC-000370.ps1) – Disable Convenience PIN Sign-in
-
-(Additional STIG implementations will be added as completed.)
-
+- [WN10-CC-000205](STIG/WN10-CC-000205.ps1) – Windows Telemetry Not Set to Full
+- [WN10-00-000031](STIG/WN10-00-000031.ps1) – BitLocker Pre-Boot Authentication (TPM + PIN)
+- [WN10-CC-000370](STIG/WN10-CC-000370.ps1) – Disable Convenience PIN Sign-In
+- [WN10-CC-000391](STIG/WN10-CC-000391.ps1) – Prevent Storage of Network Credentials
+- [WN10-CC-000310](STIG/WN10-CC-000310.ps1) – Disable Always Install with Elevated Privileges
+- [WN10-CC-000052](STIG/WN10-CC-000052.ps1) – Enable Windows Defender Real-Time Protection
+- [WN10-CC-000295](STIG/WN10-CC-000295.ps1) – Limit Blank Password Usage
+- [WN10-CC-000326](STIG/WN10-CC-000326.ps1) – Disable Solicited Remote Assistance
+  
 ---
 
 ## Lab Environment
