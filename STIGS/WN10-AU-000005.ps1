@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Remediates DISA STIG WN10-AU-000005 by ensuring Audit Account Management
+    Remediates DISA STIG WN10-AU-000005 by ensuring Account Management auditing
     is configured to log both Success and Failure events.
 
 .NOTES
@@ -29,18 +29,26 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
 }
 
 try {
-    # Enable Success and Failure auditing for Account Management
-    auditpol /set /subcategory:"Account Management" /success:enable /failure:enable | Out-Null
+    # Set Account Management category to log Success and Failure
+    auditpol /set /category:"Account Management" /success:enable /failure:enable | Out-Null
 
-    # Verify configuration
-    $result = auditpol /get /subcategory:"Account Management"
+    # Verify (use /r for consistent output)
+    $result = auditpol /get /category:"Account Management" /r
 
-    if ($result -match "Success\s+Enabled" -and $result -match "Failure\s+Enabled") {
-        Write-Output "COMPLIANT: WN10-AU-000005 successfully configured."
-        exit 0
+    # If ANY subcategory still says "No Auditing", treat as not compliant
+    if ($result -match "No Auditing") {
+        Write-Error "NOT COMPLIANT: One or more Account Management audit policies are still set to 'No Auditing'."
+        Write-Output $result
+        exit 2
     }
-    else {
-        Write-Error "NOT COMPLIANT: Audit Account Management not properly configured."
+
+    # Otherwise ensure Success and Failure are present somewhere in the category output
+    if (($result -match "Success") -and ($result -match "Failure")) {
+        Write-Output "COMPLIANT: WN10-AU-000005 successfully configured (Account Management auditing enabled)."
+        exit 0
+    } else {
+        Write-Error "NOT COMPLIANT: Unable to verify Success/Failure auditing for Account Management."
+        Write-Output $result
         exit 2
     }
 }
@@ -48,4 +56,3 @@ catch {
     Write-Error "Remediation failed: $($_.Exception.Message)"
     exit 3
 }
-
