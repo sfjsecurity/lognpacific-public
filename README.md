@@ -2,16 +2,16 @@
 
 ## Overview
 
-This repository contains remediation scripts and documentation for addressing security findings identified through vulnerability and compliance scanning.
+This repository contains PowerShell-based remediations and supporting documentation for DISA Windows 10 STIG findings identified through compliance scanning.
 
-The focus of this project is to demonstrate structured remediation methodology, including:
+The objective of this project is to demonstrate structured vulnerability management practices, including:
 
-- Baseline vulnerability assessment
-- Identification of security findings
+- Baseline compliance assessment
+- Identification and analysis of security findings
 - Manual remediation validation
-- Automated remediation using PowerShell
-- Rescan verification to confirm compliance
-
+- Automated remediation development
+- Post-remediation compliance verification
+  
 ---
 
 ## STIG Implementations
@@ -33,11 +33,13 @@ The following DISA Windows 10 STIG controls have been implemented and automated:
 
 ## Lab Environment
 
+All remediations were validated through Tenable Policy Compliance scanning.
+
 - Windows 10 Enterprise 22H2 (x64 Gen2 VM)
 - Tenable Cloud (Compliance & Vulnerability Scanning)
-- DISA Windows 10 STIG Baseline
+- DISA Windows 10 STIG v3r1 Baseline
 - PowerShell 5.1+
-
+  
 ---
 
 ## Methodology
