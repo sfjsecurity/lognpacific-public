@@ -66,6 +66,6 @@ This repository is designed to demonstrate:
 
 ---
 
-## Disclaimer
-
-All activities were performed in a controlled lab environment for educational purposes only.
+> ⚠️ **Disclaimer:**  
+> All activities were performed in a controlled lab environment for educational purposes only.  
+> Scripts should not be deployed in production environments without proper testing and change management.
