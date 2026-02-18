@@ -19,6 +19,8 @@ The focus of this project is to demonstrate structured remediation methodology, 
 The following DISA Windows 10 STIG controls have been implemented and automated:
 
 - [WN10-AU-000500](STIG/WN10-AU-000500.ps1) – Application Event Log Maximum Size
+- [WN10-AU-000005](STIG/WN10-AU-000005.ps1) – Audit Credential Validation (Failure)
+
 
 (Additional STIG implementations will be added as completed.)
 
