@@ -1,42 +1,71 @@
-# Windows 10 STIG Remediation Lab - LOG(N) Pacific
+# LognPacific Cybersecurity Lab Portfolio
 
 ## Overview
 
-This repository contains Windows 10 STIG remediation scripts developed as part of the LOG(N) Pacific cybersecurity training program.
+This repository documents hands-on cybersecurity exercises completed as part of the LognPacific program.
 
-Each script follows the official DISA Windows 10 STIG ID naming convention and is tested in a controlled lab environment.
+The objective of this lab portfolio is to demonstrate practical implementation across multiple security disciplines including:
+
+• STIG compliance & secure configuration management  
+• Vulnerability assessment & remediation  
+• Threat hunting & investigative analysis  
+• Detection engineering concepts  
+• Security automation using PowerShell  
+
+Each section of this repository reflects structured methodology, validation processes, and enterprise-aligned security practices.
 
 ---
 
 ## Lab Environment
 
-- Operating System: Windows 10 Enterprise 22H2 (x64 Gen2)
-- Virtualization Platform: Hyper-V / VMware
-- PowerShell Version: 5.1+
-- STIG Baseline: Windows 10 STIG v3r1
+- Windows 10 Enterprise 22H2 (x64 Gen2 VM)
+- Tenable Cloud (Compliance & Vulnerability Scanning)
+- DISA Windows 10 STIG Baseline
+- PowerShell 5.1+
+- Security Event Logs
+- Virtualized Lab Environment
+
+---
+## Sections
+
+### STIG
+
+Implementation and automation of DISA Windows 10 STIG controls.  
+Includes baseline scans, remediation workflow, validation, and PowerShell automation.
 
 ---
 
-## Directory Structure
+### Threat-Hunt
 
-[WN10-AU-000500.ps1](STIGS/WN10-AU-000500.ps1)
+Hypothesis-driven investigations using system logs and telemetry.  
+Includes documented findings, analysis methodology, and remediation recommendations.
 
+---
 
+### Vulnerability-Management
+
+Scan configuration, baseline analysis, prioritization, and remediation tracking.
+
+---
+
+### Detection-Engineering
+
+Development of detection logic, event analysis, and investigative workflows.
 
 ---
 
 ## Objective
 
-The purpose of this lab is to:
+This repository is designed to demonstrate:
 
-- Understand DISA STIG compliance requirements
-- Implement secure configuration settings using PowerShell
-- Practice enterprise-grade system hardening
-- Align remediation work with vulnerability management best practices
+• Enterprise-style remediation lifecycle  
+• Secure system configuration enforcement  
+• Threat detection and analysis capability  
+• Structured documentation and validation discipline  
+• Automation of security controls  
 
 ---
 
 ## Disclaimer
 
-This repository is intended for educational and lab use only.  
-Scripts should be tested in a non-production environment before deployment.
+All activities were performed in a controlled lab environment for educational purposes only.
