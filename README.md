@@ -18,11 +18,11 @@ The focus of this project is to demonstrate structured remediation methodology, 
 
 The following DISA Windows 10 STIG controls have been implemented and automated:
 
-- [WN10-AU-000500](STIG/WN10-AU-000500.ps1) – Application Event Log Maximum Size
+- [WN10-AU-000500](STIG/WN10-AU-000500.ps1) – Application Event Log Size
 - [WN10-AU-000005](STIG/WN10-AU-000005.ps1) – Audit Credential Validation (Failure)
 - [WN10-CC-000205](STIG/WN10-CC-000205.ps1) – Windows Telemetry Configuration
-
-
+- [WN10-00-000031](STIG/WN10-00-000031.ps1) – BitLocker Pre-Boot Authentication (TPM+PIN)
+- [WN10-CC-000370](STIG/WN10-CC-000370.ps1) – Disable Convenience PIN Sign-in
 
 (Additional STIG implementations will be added as completed.)
 
