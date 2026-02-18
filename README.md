@@ -1,18 +1,26 @@
-# LognPacific Cybersecurity Lab Portfolio
+# Vulnerability Remediations
 
 ## Overview
 
-This repository documents hands-on cybersecurity exercises completed as part of the LognPacific program.
+This repository contains remediation scripts and documentation for addressing security findings identified through vulnerability and compliance scanning.
 
-The objective of this lab portfolio is to demonstrate practical implementation across multiple security disciplines including:
+The focus of this project is to demonstrate structured remediation methodology, including:
 
-• STIG compliance & secure configuration management  
-• Vulnerability assessment & remediation  
-• Threat hunting & investigative analysis  
-• Detection engineering concepts  
-• Security automation using PowerShell  
+- Baseline vulnerability assessment
+- Identification of security findings
+- Manual remediation validation
+- Automated remediation using PowerShell
+- Rescan verification to confirm compliance
 
-Each section of this repository reflects structured methodology, validation processes, and enterprise-aligned security practices.
+---
+
+## STIG Implementations
+
+The following DISA Windows 10 STIG controls have been implemented and automated:
+
+- [WN10-AU-000500](STIG/WN10-AU-000500.ps1) – Application Event Log Maximum Size
+
+(Additional STIG implementations will be added as completed.)
 
 ---
 
@@ -22,49 +30,24 @@ Each section of this repository reflects structured methodology, validation proc
 - Tenable Cloud (Compliance & Vulnerability Scanning)
 - DISA Windows 10 STIG Baseline
 - PowerShell 5.1+
-- Security Event Logs
-- Virtualized Lab Environment
-
----
-## Sections
-
-### [STIG](STIGS/)
-
-Implementation and automation of DISA Windows 10 STIG controls.  
-Includes baseline scans, remediation workflow, validation, and PowerShell automation.
 
 ---
 
-### [Threat-Hunt](Threat-Hunting/)
+## Methodology
 
-Hypothesis-driven investigations using system logs and telemetry.  
-Includes documented findings, analysis methodology, and remediation recommendations.
+Each remediation follows this lifecycle:
 
----
-
-### [Vulnerability-Management](https://github.com/sfjsecurity/vulnerability-management-project)
-
-Scan configuration, baseline analysis, prioritization, and remediation tracking.
-
----
-
-### Detection-Engineering
-
-Development of detection logic, event analysis, and investigative workflows.
+1. Perform initial baseline scan
+2. Identify failed control
+3. Research remediation requirements
+4. Implement manual fix
+5. Validate via rescan
+6. Revert to confirm failure state
+7. Automate remediation with PowerShell
+8. Perform final validation scan
 
 ---
 
-## Objective
-
-This repository is designed to demonstrate:
-
-• Enterprise-style remediation lifecycle  
-• Secure system configuration enforcement  
-• Threat detection and analysis capability  
-• Structured documentation and validation discipline  
-• Automation of security controls  
-
----
 
 > ⚠️ **Disclaimer:**  
 > All activities were performed in a controlled lab environment for educational purposes only.  
