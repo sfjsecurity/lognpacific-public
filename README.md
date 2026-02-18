@@ -28,7 +28,7 @@ Each section of this repository reflects structured methodology, validation proc
 ---
 ## Sections
 
-### [STIG](STIG/)
+### [STIG](STIGS/)
 
 Implementation and automation of DISA Windows 10 STIG controls.  
 Includes baseline scans, remediation workflow, validation, and PowerShell automation.
