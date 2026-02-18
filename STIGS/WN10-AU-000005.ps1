@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
-    Remediates DISA STIG WN10-AU-000005 by ensuring Account Management auditing
-    is configured to log both Success and Failure events.
+    Remediates DISA STIG WN10-AU-000005 by ensuring Audit Credential Validation
+    is configured to log Failure events.
 
 .NOTES
     Author          : Sana Jafferi
@@ -10,6 +10,8 @@
     Date Created    : 2026-02-18
     Last Modified   : 2026-02-18
     Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
     STIG-ID         : WN10-AU-000005
 
 .TESTED ON
@@ -29,26 +31,27 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
 }
 
 try {
-    # Set Account Management category to log Success and Failure
-    auditpol /set /category:"Account Management" /success:enable /failure:enable | Out-Null
+    # Enforce advanced audit policy (STIG-aligned)
+    # Policy: "Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings"
+    $lsaPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+    Set-ItemProperty -Path $lsaPath -Name "SCENoApplyLegacyAuditPolicy" -Value 1 -Type DWord -Force
 
-    # Verify (use /r for consistent output)
-    $result = auditpol /get /category:"Account Management" /r
+    # Enable FAILURE auditing for Account Logon category (includes Credential Validation)
+    auditpol /set /category:"Account Logon" /failure:enable | Out-Null
 
-    # If ANY subcategory still says "No Auditing", treat as not compliant
-    if ($result -match "No Auditing") {
-        Write-Error "NOT COMPLIANT: One or more Account Management audit policies are still set to 'No Auditing'."
-        Write-Output $result
-        exit 2
-    }
+    # Verify registry setting
+    $force = (Get-ItemProperty -Path $lsaPath -Name "SCENoApplyLegacyAuditPolicy" -ErrorAction Stop).SCENoApplyLegacyAuditPolicy
 
-    # Otherwise ensure Success and Failure are present somewhere in the category output
-    if (($result -match "Success") -and ($result -match "Failure")) {
-        Write-Output "COMPLIANT: WN10-AU-000005 successfully configured (Account Management auditing enabled)."
+    # Verify audit output (system shows "Credential Validation  Failure")
+    $out = auditpol /get /category:"Account Logon"
+    $credLine = ($out | Select-String -Pattern "Credential Validation" -CaseSensitive:$false).Line
+
+    if ($force -eq 1 -and $credLine -match "\bFailure\b") {
+        Write-Output "COMPLIANT: WN10-AU-000005 configured (Credential Validation = Failure; advanced audit enforced)."
         exit 0
     } else {
-        Write-Error "NOT COMPLIANT: Unable to verify Success/Failure auditing for Account Management."
-        Write-Output $result
+        Write-Error "NOT COMPLIANT: Unable to verify Credential Validation = Failure and/or advanced audit enforcement."
+        Write-Output $out
         exit 2
     }
 }
