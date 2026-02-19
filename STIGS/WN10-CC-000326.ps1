@@ -1,13 +1,14 @@
 <#
 .SYNOPSIS
-    Remediates DISA STIG WN10-CC-000326 by disabling Solicited Remote Assistance.
+    Remediates DISA STIG WN10-CC-000326 (Windows 10 STIG v3r5) by enabling
+    PowerShell Script Block Logging.
 
 .NOTES
     Author          : Sana Jafferi
     LinkedIn        : linkedin.com/in/sanajafferi/
     GitHub          : github.com/sfjsecurity
     Date Created    : 2026-02-18
-    Last Modified   : 2026-02-18
+    Last Modified   : 2026-02-19
     Version         : 1.0
     CVEs            : N/A
     Plugin IDs      : N/A
@@ -29,28 +30,41 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     exit 1
 }
 
-$RegistryPath  = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
-$ValueName     = "fAllowToGetHelp"
-$RequiredValue = 0
+$RegistryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging"
+$ValueName    = "EnableScriptBlockLogging"
+$Required     = 1
 
 try {
+    # Ensure key exists
     if (-not (Test-Path $RegistryPath)) {
         New-Item -Path $RegistryPath -Force | Out-Null
     }
 
+    # Enable Script Block Logging
     New-ItemProperty -Path $RegistryPath `
                      -Name $ValueName `
                      -PropertyType DWord `
-                     -Value $RequiredValue `
+                     -Value $Required `
                      -Force | Out-Null
 
-    $current = (Get-ItemProperty -Path $RegistryPath -Name $ValueName -ErrorAction Stop).$ValueName
+    # Optional: enable invocation logging too (harmless if not required)
+    New-ItemProperty -Path $RegistryPath `
+                     -Name "EnableScriptBlockInvocationLogging" `
+                     -PropertyType DWord `
+                     -Value 1 `
+                     -Force | Out-Null
 
-    if ([int]$current -eq $RequiredValue) {
-        Write-Output "COMPLIANT: WN10-CC-000326 configured (Solicited Remote Assistance disabled)."
+    # Refresh policy
+    gpupdate /target:computer /force | Out-Null
+
+    # Verify
+    $current = (Get-ItemProperty -Path $RegistryPath -Name $ValueName -ErrorAction Stop).$ValueName
+    if ([int]$current -eq $Required) {
+        Write-Output "COMPLIANT: WN10-CC-000326 configured (PowerShell Script Block Logging enabled)."
+        Write-Output "NOTE: Reboot recommended before rescanning Tenable."
         exit 0
     } else {
-        Write-Error "NOT COMPLIANT: $ValueName is $current (expected $RequiredValue)."
+        Write-Error "NOT COMPLIANT: $ValueName is $current (expected $Required)."
         exit 2
     }
 }
@@ -58,4 +72,3 @@ catch {
     Write-Error "Remediation failed: $($_.Exception.Message)"
     exit 3
 }
-
