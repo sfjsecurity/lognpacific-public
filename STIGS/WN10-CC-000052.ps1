@@ -1,17 +1,15 @@
 <#
 .SYNOPSIS
-    Remediates DISA STIG WN10-CC-000052 by ensuring Windows Defender
-    real-time monitoring is enabled.
+    Remediates DISA STIG WN10-CC-000052 (Windows 10 STIG v3r5)
+    by configuring ECC Curve Order to prioritize NistP384 and NistP256.
 
 .NOTES
     Author          : Sana Jafferi
     LinkedIn        : linkedin.com/in/sanajafferi/
     GitHub          : github.com/sfjsecurity
     Date Created    : 2026-02-18
-    Last Modified   : 2026-02-18
+    Last Modified   : 2026-02-19
     Version         : 1.0
-    CVEs            : N/A
-    Plugin IDs      : N/A
     STIG-ID         : WN10-CC-000052
 
 .TESTED ON
@@ -30,28 +28,32 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     exit 1
 }
 
-$RegistryPath  = "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection"
-$ValueName     = "DisableRealtimeMonitoring"
-$RequiredValue = 0
+$RegistryPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Cryptography\Configuration\Local\SSL\00010002"
+$ValueName    = "EccCurves"
+$Required     = @("NistP384","NistP256")
 
 try {
+    # Ensure path exists
     if (-not (Test-Path $RegistryPath)) {
         New-Item -Path $RegistryPath -Force | Out-Null
     }
 
+    # Set ECC curve order (REG_MULTI_SZ)
     New-ItemProperty -Path $RegistryPath `
                      -Name $ValueName `
-                     -PropertyType DWord `
-                     -Value $RequiredValue `
+                     -PropertyType MultiString `
+                     -Value $Required `
                      -Force | Out-Null
 
+    # Verify
     $current = (Get-ItemProperty -Path $RegistryPath -Name $ValueName -ErrorAction Stop).$ValueName
 
-    if ([int]$current -eq $RequiredValue) {
-        Write-Output "COMPLIANT: WN10-CC-000052 configured (Defender real-time monitoring enabled)."
+    if ($current[0] -eq "NistP384" -and $current[1] -eq "NistP256") {
+        Write-Output "COMPLIANT: WN10-CC-000052 configured (ECC Curve Order set correctly)."
+        Write-Output "NOTE: Reboot recommended before rescanning Tenable."
         exit 0
     } else {
-        Write-Error "NOT COMPLIANT: $ValueName is $current (expected $RequiredValue)."
+        Write-Error "NOT COMPLIANT: ECC Curve Order incorrect."
         exit 2
     }
 }
@@ -59,4 +61,3 @@ catch {
     Write-Error "Remediation failed: $($_.Exception.Message)"
     exit 3
 }
-
