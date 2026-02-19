@@ -1,14 +1,14 @@
 <#
 .SYNOPSIS
-    Remediates DISA STIG WN10-CC-000295 by limiting local account use of blank
-    passwords to console logon only.
+    Remediates DISA STIG WN10-CC-000295 (Windows 10 STIG v3r5) by preventing
+    downloading of enclosures (attachments) from RSS feeds.
 
 .NOTES
     Author          : Sana Jafferi
     LinkedIn        : linkedin.com/in/sanajafferi/
     GitHub          : github.com/sfjsecurity
     Date Created    : 2026-02-18
-    Last Modified   : 2026-02-18
+    Last Modified   : 2026-02-19
     Version         : 1.0
     CVEs            : N/A
     Plugin IDs      : N/A
@@ -30,21 +30,32 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     exit 1
 }
 
-$RegistryPath  = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
-$ValueName     = "LimitBlankPasswordUse"
-$RequiredValue = 1
+$RegistryPath  = "HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds"
+$ValueName     = "DisableEnclosureDownload"
+$RequiredValue = 1  # Enabled
 
 try {
+    # Ensure key exists
+    if (-not (Test-Path $RegistryPath)) {
+        New-Item -Path $RegistryPath -Force | Out-Null
+    }
+
+    # Enable policy
     New-ItemProperty -Path $RegistryPath `
                      -Name $ValueName `
                      -PropertyType DWord `
                      -Value $RequiredValue `
                      -Force | Out-Null
 
+    # Refresh policy
+    gpupdate /target:computer /force | Out-Null
+
+    # Verify
     $current = (Get-ItemProperty -Path $RegistryPath -Name $ValueName -ErrorAction Stop).$ValueName
 
     if ([int]$current -eq $RequiredValue) {
-        Write-Output "COMPLIANT: WN10-CC-000295 configured (blank passwords restricted to console logon only)."
+        Write-Output "COMPLIANT: WN10-CC-000295 configured (Prevent RSS enclosure downloads enabled)."
+        Write-Output "NOTE: Reboot recommended before rescanning Tenable."
         exit 0
     } else {
         Write-Error "NOT COMPLIANT: $ValueName is $current (expected $RequiredValue)."
@@ -55,4 +66,3 @@ catch {
     Write-Error "Remediation failed: $($_.Exception.Message)"
     exit 3
 }
-
