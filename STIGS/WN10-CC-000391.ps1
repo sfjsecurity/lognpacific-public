@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
-    Remediates DISA STIG WN10-CC-000391 by preventing the storage
-    of passwords and credentials for network authentication.
+    Remediates DISA STIG WN10-CC-000391 (Windows 10 STIG v3r5) by disabling
+    Internet Explorer 11 as a standalone browser (redirect to Microsoft Edge IE mode).
 
 .NOTES
     Author          : Sana Jafferi
@@ -10,8 +10,6 @@
     Date Created    : 2026-02-18
     Last Modified   : 2026-02-18
     Version         : 1.0
-    CVEs            : N/A
-    Plugin IDs      : N/A
     STIG-ID         : WN10-CC-000391
 
 .TESTED ON
@@ -30,25 +28,35 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     exit 1
 }
 
-$RegistryPath  = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
-$ValueName     = "DisableDomainCreds"
-$RequiredValue = 1
+$RegistryPath  = "HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Main"
+$ValueName     = "NotifyDisableIEOptions"
+$RequiredValue = 0   # 0=Never, 1=Always, 2=Once per user
 
 try {
+    # Ensure key exists
+    if (-not (Test-Path $RegistryPath)) {
+        New-Item -Path $RegistryPath -Force | Out-Null
+    }
+
+    # Set policy value
     New-ItemProperty -Path $RegistryPath `
                      -Name $ValueName `
                      -PropertyType DWord `
                      -Value $RequiredValue `
                      -Force | Out-Null
 
+    # Refresh policy (helps Tenable read the effective setting)
+    & gpupdate /target:computer /force | Out-Null
+
+    # Verify
     $current = (Get-ItemProperty -Path $RegistryPath -Name $ValueName -ErrorAction Stop).$ValueName
 
-    if ($current -eq $RequiredValue) {
-        Write-Output "COMPLIANT: WN10-CC-000391 configured (DisableDomainCreds = 1)."
+    if ([int]$current -eq $RequiredValue) {
+        Write-Output "COMPLIANT: WN10-CC-000391 configured (IE11 standalone disabled; NotifyDisableIEOptions = $RequiredValue)."
+        Write-Output "NOTE: Reboot recommended before rescanning Tenable."
         exit 0
-    }
-    else {
-        Write-Error "NOT COMPLIANT: DisableDomainCreds is $current (expected $RequiredValue)."
+    } else {
+        Write-Error "NOT COMPLIANT: $ValueName is $current (expected $RequiredValue)."
         exit 2
     }
 }
@@ -56,4 +64,3 @@ catch {
     Write-Error "Remediation failed: $($_.Exception.Message)"
     exit 3
 }
-
