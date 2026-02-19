@@ -1,15 +1,15 @@
 <#
 .SYNOPSIS
-    Remediates DISA STIG WN10-CC-000310 by disabling
-    "Always install with elevated privileges" for Windows Installer.
+    Remediates DISA STIG WN10-CC-000310 (Windows 10 STIG v3r5) by disabling
+    user control over Windows Installer installs.
 
 .NOTES
     Author          : Sana Jafferi
     LinkedIn        : linkedin.com/in/sanajafferi/
     GitHub          : github.com/sfjsecurity
     Date Created    : 2026-02-18
-    Last Modified   : 2026-02-18
-    Version         : 1.0
+    Last Modified   : 2026-02-19
+    Version         : 1.1
     CVEs            : N/A
     Plugin IDs      : N/A
     STIG-ID         : WN10-CC-000310
@@ -30,38 +30,35 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     exit 1
 }
 
-$Paths = @(
-    "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer",
-    "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Installer"
-)
-
-$ValueName = "AlwaysInstallElevated"
-$RequiredValue = 0
+$RegistryPath  = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer"
+$ValueName     = "EnableUserControl"
+$RequiredValue = 0  # Disabled
 
 try {
-    foreach ($Path in $Paths) {
-
-        if (-not (Test-Path $Path)) {
-            New-Item -Path $Path -Force | Out-Null
-        }
-
-        New-ItemProperty -Path $Path `
-                         -Name $ValueName `
-                         -PropertyType DWord `
-                         -Value $RequiredValue `
-                         -Force | Out-Null
+    # Ensure registry path exists
+    if (-not (Test-Path $RegistryPath)) {
+        New-Item -Path $RegistryPath -Force | Out-Null
     }
+
+    # Set policy value
+    New-ItemProperty -Path $RegistryPath `
+                     -Name $ValueName `
+                     -PropertyType DWord `
+                     -Value $RequiredValue `
+                     -Force | Out-Null
+
+    # Refresh policy
+    gpupdate /target:computer /force | Out-Null
 
     # Verify
-    $lm = (Get-ItemProperty -Path $Paths[0] -Name $ValueName -ErrorAction Stop).$ValueName
-    $cu = (Get-ItemProperty -Path $Paths[1] -Name $ValueName -ErrorAction Stop).$ValueName
+    $current = (Get-ItemProperty -Path $RegistryPath -Name $ValueName -ErrorAction Stop).$ValueName
 
-    if ($lm -eq 0 -and $cu -eq 0) {
-        Write-Output "COMPLIANT: WN10-CC-000310 configured (AlwaysInstallElevated disabled)."
+    if ([int]$current -eq $RequiredValue) {
+        Write-Output "COMPLIANT: WN10-CC-000310 configured (EnableUserControl = 0)."
+        Write-Output "NOTE: Reboot recommended before rescanning Tenable."
         exit 0
-    }
-    else {
-        Write-Error "NOT COMPLIANT: AlwaysInstallElevated not properly disabled."
+    } else {
+        Write-Error "NOT COMPLIANT: EnableUserControl is $current (expected $RequiredValue)."
         exit 2
     }
 }
@@ -69,4 +66,3 @@ catch {
     Write-Error "Remediation failed: $($_.Exception.Message)"
     exit 3
 }
-
