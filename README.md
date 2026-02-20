@@ -23,11 +23,11 @@ The following DISA Windows 10 STIG controls have been implemented and automated:
 - [WN10-CC-000205](STIGS/WN10-CC-000205.ps1) – Windows Telemetry Not Set to Full
 - [WN10-00-000031](STIGS/WN10-00-000031.ps1) – BitLocker Pre-Boot Authentication (TPM + PIN)
 - [WN10-CC-000370](STIGS/WN10-CC-000370.ps1) – Disable Convenience PIN Sign-In
-- [WN10-CC-000391](STIGS/WN10-CC-000391.ps1) – Prevent Storage of Network Credentials
-- [WN10-CC-000310](STIGS/WN10-CC-000310.ps1) – Disable Always Install with Elevated Privileges
-- [WN10-CC-000052](STIGS/WN10-CC-000052.ps1) – Enable Windows Defender Real-Time Protection
-- [WN10-CC-000295](STIGS/WN10-CC-000295.ps1) – Limit Blank Password Usage
-- [WN10-CC-000326](STIGS/WN10-CC-000326.ps1) – Disable Solicited Remote Assistance
+- [WN10-CC-000391](STIGS/WN10-CC-000391.ps1) – Disable Internet Explorer 11 as Standalone Browser
+- [WN10-CC-000310](STIGS/WN10-CC-000310.ps1) – Disable “Allow User Control Over Installs”
+- [WN10-CC-000052](STIGS/WN10-CC-000052.ps1) – Configure ECC Curve Order (NistP384, NistP256)
+- [WN10-CC-000295](STIGS/WN10-CC-000295.ps1) – Prevent Downloading of RSS Feed Enclosures
+- [WN10-CC-000326](STIGS/WN10-CC-000326.ps1) – Enable PowerShell Script Block Logging
   
 ---
 
@@ -37,7 +37,7 @@ All remediations were validated through Tenable Policy Compliance scanning.
 
 - Windows 10 Enterprise 22H2 (x64 Gen2 VM)
 - Tenable Cloud (Compliance & Vulnerability Scanning)
-- DISA Windows 10 STIG v3r1 Baseline
+- DISA Windows 10 STIG v3r5 Baseline
 - PowerShell 5.1+
   
 ---
