@@ -6,10 +6,10 @@ This repository contains PowerShell-based remediations and supporting documentat
 
 The objective of this project is to demonstrate structured vulnerability management practices, including:
 
-- Baseline compliance assessment
-- Identification and analysis of security findings
-- Manual remediation validation
-- Automated remediation development
+- Baseline compliance assessment  
+- Identification and analysis of security findings  
+- Manual remediation validation  
+- Automated remediation development  
 - Post-remediation compliance verification
   
 ---
